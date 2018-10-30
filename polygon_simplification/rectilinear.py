@@ -11,7 +11,7 @@ def cover(polygon, width, max_queries=float('inf')):
     boxes = []
     xmin, ymin, xmax, ymax = polygon.bounds
 
-    if (xmax - xmin) * (ymax - ymin) > max_queries * width *width:
+    if (xmax - xmin) * (ymax - ymin) > max_queries * width * width:
         return None, None, None
 
     x = xmin
@@ -41,12 +41,12 @@ def simplify(polygon, width, query_budget=3000):
     queries = 0
     while queries < query_budget:
         theta = random.uniform(0, 2*math.pi)
-        s = rotate(geom=polygon, angle=theta, origin=(cx,cy), use_radians=True)
+        s = rotate(geom=polygon, angle=theta, origin=(cx, cy), use_radians=True)
         shape, area, query_cost = cover(s, width)
         queries = queries + query_cost
         if area < best_area:
             best_area = area
-            best_shape = rotate(geom=shape, angle=-theta, origin=(cx,cy), use_radians=True)
+            best_shape = rotate(geom=shape, angle=-theta, origin=(cx, cy), use_radians=True)
 
         # return best_area*(width*width)
         return best_shape
