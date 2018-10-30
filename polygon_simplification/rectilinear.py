@@ -19,13 +19,14 @@ def cover(polygon, width, max_queries=float('inf')):
         y = ymin
         while y < ymax:
             queries = queries + 1
-            box = Polygon([(x+width, y+width), (x+width, y), (x, y), (x, y+width)])
+            box = Polygon([(x + width, y + width), (x + width, y), (x, y),
+                           (x, y + width)])
             if box.intersects(polygon):
                 boxes.append(box)
             y = y + width
         x = x + width
 
-    area = len(boxes)*width*width
+    area = len(boxes) * width * width
     return cascaded_union(boxes), area, queries
 
 
@@ -40,13 +41,15 @@ def simplify(polygon, width, query_budget=3000):
 
     queries = 0
     while queries < query_budget:
-        theta = random.uniform(0, 2*math.pi)
-        s = rotate(geom=polygon, angle=theta, origin=(cx, cy), use_radians=True)
+        theta = random.uniform(0, 2 * math.pi)
+        s = rotate(
+            geom=polygon, angle=theta, origin=(cx, cy), use_radians=True)
         shape, area, query_cost = cover(s, width)
         queries = queries + query_cost
         if area < best_area:
             best_area = area
-            best_shape = rotate(geom=shape, angle=-theta, origin=(cx, cy), use_radians=True)
+            best_shape = rotate(
+                geom=shape, angle=-theta, origin=(cx, cy), use_radians=True)
 
         # return best_area*(width*width)
         return best_shape
