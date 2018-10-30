@@ -6,7 +6,7 @@ from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
 
 
-def cover(polygon, width, max_queries=math.inf):
+def cover(polygon, width, max_queries=float('inf')):
     queries = 0
     boxes = []
     xmin, ymin, xmax, ymax = polygon.bounds
@@ -16,7 +16,7 @@ def cover(polygon, width, max_queries=math.inf):
 
     x = xmin
     while x < xmax:
-        y = ymin)
+        y = ymin
         while y < ymax:
             queries = queries + 1
             box = Polygon([(x+width, y+width), (x+width, y), (x, y), (x, y+width)])
