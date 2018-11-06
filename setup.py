@@ -1,17 +1,20 @@
 from setuptools import setup
 
 setup(
-    name='polygon_simplification',
+    name='mask-to-polygons',
     version='0.1.0',
-    description='Routines for simplifying shapely polygons',
-    url='https://github.com/jamesmcclain/polygon-simplification',
+    description='Routines for extracting and working with polygons from semantic segmentation masks',
+    url='https://github.com/jamesmcclain/mask-to-polygons',
     author='James McClain',
     author_email='jmcclain@azava.com',
     license='Apache License 2.0',
     install_requires=[
         'Shapely==1.6.*',
+        'opencv-python==3.4.*',
+        'numpy>=1.0.0',
+        'rasterio>=1.0.0',
     ],
     packages=[
-        'polygon_simplification',
+        'mask_to_polygons',
     ],
 )
