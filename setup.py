@@ -15,6 +15,7 @@ setup(
         'rasterio>=1.0.0',
     ],
     packages=[
-        'mask_to_polygons',
+         'mask_to_polygons.simplification',
+         'mask_to_polygons.processing',
     ],
 )
