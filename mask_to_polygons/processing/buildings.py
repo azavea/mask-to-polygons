@@ -49,33 +49,16 @@ def get_kernel(buildings,
     return kernel
 
 
-def split_buildings(buildings,
-                    min_aspect_ratio=1.618,
-                    min_area_ratio=0.75,
-                    max_steps=10):
-    buildings_area = float(buildings.sum())
-    retval = buildings
-    low = 0.0
-    high = 1.0
-    i = 0
-
-    while i < max_steps:
-        width_factor = (low + high) / 2.0
-        kernel = get_kernel(
-            buildings,
-            min_aspect_ratio=min_aspect_ratio,
-            width_factor=width_factor)
-        if kernel is None:
-            return buildings
-        _retval = cv2.morphologyEx(
-            buildings.copy(), cv2.MORPH_OPEN, kernel, iterations=1)
-        _retval = np.array(_retval == 1, dtype=np.uint8)
-        split_area = float(_retval.sum())
-        if split_area / buildings_area > min_area_ratio:
-            low = width_factor
-            retval = _retval
-        else:
-            high = width_factor
-        i = i + 1
+def split_building_clusters(buildings,
+                            min_aspect_ratio=1.618,
+                            width_factor=0.33):
+    kernel = get_kernel(
+        buildings,
+        min_aspect_ratio=min_aspect_ratio,
+        width_factor=width_factor)
+    if kernel is None:
+        return buildings
+    retval = cv2.morphologyEx(buildings, cv2.MORPH_OPEN, kernel, iterations=1)
+    retval = np.array(retval == 1, dtype=np.uint8)
 
     return retval
