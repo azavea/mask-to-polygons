@@ -1,5 +1,6 @@
 import cv2
 import json
+import math
 import numpy as np
 
 
@@ -29,23 +30,29 @@ def get_kernel(buildings,
     if rotrect is None:
         rotrect = get_rectangle(buildings)
     (_, (xwidth, ywidth), angle) = rotrect
+    sqrt2 = math.sqrt(2)
+
     width = int(width_factor * min(xwidth, ywidth))
     kernel = np.zeros((width, width), dtype=np.uint8)
     try:
         kernel = cv2.cvtColor(kernel, cv2.COLOR_GRAY2BGR)
     except Exception:
         return None
+
     ratio = max(ywidth, xwidth) / min(ywidth, xwidth)
     if ratio < min_aspect_ratio:
         return None
     if ywidth > xwidth:
-        element = (((width // 2, width // 2), (width, 1), angle))
+        element = (((width // 2, width // 2), (width * sqrt2, 0.001), angle))
     else:
-        element = (((width // 2, width // 2), (width, 1), angle + 90))
+        element = (((width // 2, width // 2), (width * sqrt2, 0.001),
+                    angle + 90))
     element = cv2.boxPoints(element)
     element = np.int0(element)
+
     cv2.drawContours(kernel, [element], 0, (1, 0, 0), -1)
     kernel = kernel[:, :, 0]
+
     return kernel
 
 
