@@ -54,7 +54,7 @@ def get_kernel(rectangle, width_factor=0.33, thickness=0.001):
     return kernel
 
 
-def _split_buildings(buildings,
+def _split_some_buildings(buildings,
                      min_aspect_ratio=1.618,
                      width_factor=0.33,
                      erode_thickness=0.001,
@@ -86,34 +86,7 @@ def _split_buildings(buildings,
     return retval
 
 
-def split_all_buildings(mask,
-                        min_aspect_ratio=1.618,
-                        min_area_ratio=0.80,
-                        hole_width_factor=0.33,
-                        hole_erode_thickness=0.001,
-                        hole_dilate_thickness=2,
-                        wave_width_factor=0.618,
-                        wave_erode_thickness=0.001,
-                        wave_dilate_thickness=10):
-    n, components = cv2.connectedComponents(mask)
-    retval = np.zeros(mask.shape, dtype=np.uint8)
-    for i in range(1, n + 1):
-        buildings = np.array(components == i, dtype=np.uint8)
-        split = split_buildings(
-            buildings,
-            min_aspect_ratio=min_aspect_ratio,
-            min_area_ratio=min_area_ratio,
-            hole_width_factor=hole_width_factor,
-            hole_erode_thickness=hole_erode_thickness,
-            hole_dilate_thickness=hole_dilate_thickness,
-            wave_width_factor=wave_width_factor,
-            wave_erode_thickness=wave_erode_thickness,
-            wave_dilate_thickness=wave_dilate_thickness)
-        retval = cv2.bitwise_or(retval, split)
-    return retval
-
-
-def split_buildings(buildings,
+def split_some_buildings(buildings,
                     min_aspect_ratio=1.618,
                     min_area_ratio=0.80,
                     hole_width_factor=0.33,
@@ -123,7 +96,7 @@ def split_buildings(buildings,
                     wave_erode_thickness=0.001,
                     wave_dilate_thickness=10):
     rectangle = get_rectangle(buildings)
-    without_holes = _split_buildings(
+    without_holes = _split_some_buildings(
         buildings,
         min_aspect_ratio=min_aspect_ratio,
         width_factor=hole_width_factor,
@@ -143,7 +116,7 @@ def split_buildings(buildings,
     retval = np.zeros(buildings.shape, dtype=np.uint8)
     for i in range(1, n + 1):
         component = np.array(components == i, dtype=np.uint8)
-        without_waves = _split_buildings(
+        without_waves = _split_some_buildings(
             component,
             min_aspect_ratio=min_aspect_ratio,
             width_factor=wave_width_factor,
@@ -162,4 +135,31 @@ def split_buildings(buildings,
         else:
             retval = cv2.bitwise_or(retval, component)
 
+    return retval
+
+
+def split_all_buildings(mask,
+                        min_aspect_ratio=1.618,
+                        min_area_ratio=0.80,
+                        hole_width_factor=0.33,
+                        hole_erode_thickness=0.001,
+                        hole_dilate_thickness=2,
+                        wave_width_factor=0.618,
+                        wave_erode_thickness=0.001,
+                        wave_dilate_thickness=10):
+    n, components = cv2.connectedComponents(mask)
+    retval = np.zeros(mask.shape, dtype=np.uint8)
+    for i in range(1, n + 1):
+        buildings = np.array(components == i, dtype=np.uint8)
+        split = split_some_buildings(
+            buildings,
+            min_aspect_ratio=min_aspect_ratio,
+            min_area_ratio=min_area_ratio,
+            hole_width_factor=hole_width_factor,
+            hole_erode_thickness=hole_erode_thickness,
+            hole_dilate_thickness=hole_dilate_thickness,
+            wave_width_factor=wave_width_factor,
+            wave_erode_thickness=wave_erode_thickness,
+            wave_dilate_thickness=wave_dilate_thickness)
+        retval = cv2.bitwise_or(retval, split)
     return retval
