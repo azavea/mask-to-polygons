@@ -86,6 +86,33 @@ def _split_buildings(buildings,
     return retval
 
 
+def split_all_buildings(mask,
+                        min_aspect_ratio=1.618,
+                        min_area_ratio=0.80,
+                        hole_width_factor=0.33,
+                        hole_erode_thickness=0.001,
+                        hole_dilate_thickness=2,
+                        wave_width_factor=0.618,
+                        wave_erode_thickness=0.001,
+                        wave_dilate_thickness=10):
+    n, components = cv2.connectedComponents(mask)
+    retval = np.zeros(mask.shape, dtype=np.uint8)
+    for i in range(1, n + 1):
+        buildings = np.array(components == i, dtype=np.uint8)
+        split = split_buildings(
+            buildings,
+            min_aspect_ratio=min_aspect_ratio,
+            min_area_ratio=min_area_ratio,
+            hole_width_factor=hole_width_factor,
+            hole_erode_thickness=hole_erode_thickness,
+            hole_dilate_thickness=hole_dilate_thickness,
+            wave_width_factor=wave_width_factor,
+            wave_erode_thickness=wave_erode_thickness,
+            wave_dilate_thickness=wave_dilate_thickness)
+        retval = cv2.bitwise_or(retval, split)
+    return retval
+
+
 def split_buildings(buildings,
                     min_aspect_ratio=1.618,
                     min_area_ratio=0.80,
@@ -105,13 +132,14 @@ def split_buildings(buildings,
         rectangle=rectangle)
 
     area_before = buildings.sum()
+    if area_before <= 0:
+        return buildings
     area_after = without_holes.sum()
     area_ratio = area_after / area_before
     if min_area_ratio >= area_ratio:
         return buildings
 
     n, components = cv2.connectedComponents(without_holes)
-
     retval = np.zeros(buildings.shape, dtype=np.uint8)
     for i in range(1, n + 1):
         component = np.array(components == i, dtype=np.uint8)
@@ -129,7 +157,8 @@ def split_buildings(buildings,
         else:
             area_ratio = area_after / area_before
         if min_area_ratio < area_ratio:
-            retval = cv2.bitwise_or(retval, cv2.bitwise_and(component, without_waves))
+            retval = cv2.bitwise_or(retval,
+                                    cv2.bitwise_and(component, without_waves))
         else:
             retval = cv2.bitwise_or(retval, component)
 
