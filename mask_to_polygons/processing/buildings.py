@@ -1,19 +1,6 @@
 import cv2
-import json
 import math
 import numpy as np
-
-
-def geometries_from_geojson(filename):
-    geojson = None
-    gs = []
-
-    with open(filename, 'r') as file:
-        geojson = json.loads(file.read())
-    for g in geojson['features']:
-        gs.append(g['geometry'])
-
-    return gs
 
 
 def get_rectangle(buildings):
@@ -55,11 +42,11 @@ def get_kernel(rectangle, width_factor=0.33, thickness=0.001):
 
 
 def _split_some_buildings(buildings,
-                     min_aspect_ratio=1.618,
-                     width_factor=0.33,
-                     erode_thickness=0.001,
-                     dilate_thickness=2,
-                     rectangle=None):
+                          min_aspect_ratio=1.618,
+                          width_factor=0.33,
+                          erode_thickness=0.001,
+                          dilate_thickness=2,
+                          rectangle=None):
     if rectangle is None:
         rectangle = get_rectangle(buildings)
         if rectangle is None:
@@ -87,14 +74,14 @@ def _split_some_buildings(buildings,
 
 
 def split_some_buildings(buildings,
-                    min_aspect_ratio=1.618,
-                    min_area_ratio=0.80,
-                    hole_width_factor=0.33,
-                    hole_erode_thickness=0.001,
-                    hole_dilate_thickness=2,
-                    wave_width_factor=0.618,
-                    wave_erode_thickness=0.001,
-                    wave_dilate_thickness=10):
+                         min_aspect_ratio=1.618,
+                         min_area_ratio=0.80,
+                         hole_width_factor=0.33,
+                         hole_erode_thickness=0.001,
+                         hole_dilate_thickness=2,
+                         wave_width_factor=0.618,
+                         wave_erode_thickness=0.001,
+                         wave_dilate_thickness=10):
     rectangle = get_rectangle(buildings)
     without_holes = _split_some_buildings(
         buildings,
