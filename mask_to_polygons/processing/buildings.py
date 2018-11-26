@@ -43,12 +43,12 @@ def get_kernel(rectangle, width_factor=0.5, thickness=0.001):
     return kernel
 
 
-def buildings(mask,
-              transform,
-              min_aspect_ratio=1.618,
-              min_area=None,
-              width_factor=0.5,
-              thickness=0.001):
+def get_polygons(mask,
+                 transform,
+                 min_aspect_ratio=1.618,
+                 min_area=None,
+                 width_factor=0.5,
+                 thickness=0.001):
     polygons = []
     if not min_area:
         min_area = mask.shape[0]  # Roughly the square root of the area
