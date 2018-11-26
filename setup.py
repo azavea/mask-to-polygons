@@ -13,9 +13,11 @@ setup(
         'opencv-python==3.4.*',
         'numpy>=1.0.0',
         'rasterio>=1.0.0',
+        'geojson>=2.4.0',
     ],
     packages=[
-         'mask_to_polygons.simplification',
-         'mask_to_polygons.processing',
+        'mask_to_polygons.simplification',
+        'mask_to_polygons.processing',
+        'mask_to_polygons',
     ],
 )
