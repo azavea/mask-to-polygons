@@ -21,7 +21,7 @@ def geometries_from_geojson(filename):
     return gs
 
 
-def geometries_from_mask(mask, transform):
+def buildings_from_mask(mask, transform):
     if isinstance(transform, rasterio.transform.Affine):
         pass
     elif isinstance(transform, str):
