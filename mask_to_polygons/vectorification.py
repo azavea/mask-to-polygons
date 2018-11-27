@@ -1,6 +1,12 @@
+import geojson
 import json
 import rasterio
 import rasterio.features
+import shapely
+import shapely.geometry
+from geojson import GeometryCollection
+
+from mask_to_polygons.processing import buildings
 
 
 def mask_from_geotiff(mask_filename):
@@ -21,15 +27,40 @@ def geometries_from_geojson(filename):
     return gs
 
 
-def geometries_from_mask(mask, transform):
+def geometries_from_mask(mask,
+                         transform,
+                         min_aspect_ratio=1.618,
+                         min_area=None,
+                         width_factor=0.5,
+                         thickness=0.001):
     if isinstance(transform, rasterio.transform.Affine):
         pass
     elif isinstance(transform, str):
         with rasterio.open(transform, 'r') as dataset:
             transform = dataset.transform
 
-    retval = []
-    for shape, value in rasterio.features.shapes(mask, transform=transform):
-        retval.append(shape)
+    polygons = buildings.get_polygons(mask, transform)
 
-    return retval
+    return polygons
+
+
+def geojson_from_mask(mask,
+                      transform,
+                      min_aspect_ratio=1.618,
+                      min_area=None,
+                      width_factor=0.5,
+                      thickness=0.001):
+    polygons = geometries_from_mask(mask, transform, min_aspect_ratio,
+                                    min_area, width_factor, thickness)
+    return geojson.dumps(GeometryCollection(polygons))
+
+
+def shapley_from_mask(mask,
+                      transform,
+                      min_aspect_ratio=1.618,
+                      min_area=None,
+                      width_factor=0.5,
+                      thickness=0.001):
+    polygons = geometries_from_mask(mask, transform, min_aspect_ratio,
+                                    min_area, width_factor, thickness)
+    return [shapely.geometry.shape(polygon) for polygon in polygons]
