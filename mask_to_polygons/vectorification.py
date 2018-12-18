@@ -7,6 +7,7 @@ import shapely.geometry
 from geojson import GeometryCollection
 
 from mask_to_polygons.processing import buildings
+from mask_to_polygons.processing import polygons
 
 
 def mask_from_geotiff(mask_filename):
@@ -29,6 +30,7 @@ def geometries_from_geojson(filename):
 
 def geometries_from_mask(mask,
                          transform,
+                         mode,
                          min_aspect_ratio=1.618,
                          min_area=None,
                          width_factor=0.5,
@@ -39,28 +41,36 @@ def geometries_from_mask(mask,
         with rasterio.open(transform, 'r') as dataset:
             transform = dataset.transform
 
-    polygons = buildings.get_polygons(mask, transform)
+    if mode == 'polygons':
+        polys = polygons.get_polygons(mask, transform)
+    elif mode == 'buildings':
+        polys = buildings.get_polygons(mask, transform, min_aspect_ratio,
+                                       min_area, width_factor, thickness)
+    else:
+        raise Exception()
 
-    return polygons
+    return polys
 
 
 def geojson_from_mask(mask,
                       transform,
+                      mode='polygon',
                       min_aspect_ratio=1.618,
                       min_area=None,
                       width_factor=0.5,
                       thickness=0.001):
-    polygons = geometries_from_mask(mask, transform, min_aspect_ratio,
-                                    min_area, width_factor, thickness)
-    return geojson.dumps(GeometryCollection(polygons))
+    polys = geometries_from_mask(mask, transform, mode, min_aspect_ratio,
+                                 min_area, width_factor, thickness)
+    return geojson.dumps(GeometryCollection(polys))
 
 
 def shapley_from_mask(mask,
                       transform,
+                      mode='polygon',
                       min_aspect_ratio=1.618,
                       min_area=None,
                       width_factor=0.5,
                       thickness=0.001):
-    polygons = geometries_from_mask(mask, transform, min_aspect_ratio,
-                                    min_area, width_factor, thickness)
-    return [shapely.geometry.shape(polygon) for polygon in polygons]
+    polys = geometries_from_mask(mask, transform, mode, min_aspect_ratio,
+                                 min_area, width_factor, thickness)
+    return [shapely.geometry.shape(polygon) for polygon in polys]
