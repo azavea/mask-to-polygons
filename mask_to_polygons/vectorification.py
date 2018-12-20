@@ -17,13 +17,20 @@ def mask_from_geotiff(mask_filename):
 
 
 def geometries_from_geojson(filename):
-    geojson = None
+    geo_json = None
     gs = []
 
     with open(filename, 'r') as file:
-        geojson = json.loads(file.read())
-    for g in geojson['features']:
-        gs.append(g['geometry'])
+        geo_json = json.loads(file.read())
+
+    if 'features' in geo_json.keys():
+        for g in geo_json['features']:
+            gs.append(g['geometry'])
+    elif 'geometries' in geo_json.keys():
+        for g in geo_json['geometries']:
+            gs.append(g)
+    else:
+        raise Exception('Unrecognized GeoJSON Format')
 
     return gs
 
