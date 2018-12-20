@@ -4,9 +4,12 @@ import rasterio.features
 
 def get_polygons(mask, transform):
     polygons = []
-    shapes = list(rasterio.features.shapes(mask, transform=transform))
+    shapes = rasterio.features.shapes(mask, transform=transform)
+    shapes = filter(lambda ab: ab[1] == 1, shapes)
+    shapes = list(shapes)
+
     if len(shapes) > 0:
-        polygons = [polygon for (polygon, _) in shapes[0:-1]]
+        polygons = [polygon for (polygon, _) in shapes]
     else:
         polygons = []
 
