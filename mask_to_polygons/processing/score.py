@@ -54,8 +54,4 @@ def spacenet(predictions, ground_truth):
             fp = fp + 1
     fn = len(list(filter(not_already_matched, ground_truth)))
 
-    return {
-        'tp': tp,
-        'fp': fp,
-        'fn': fn
-    }
+    return {'tp': tp, 'fp': fp, 'fn': fn}
