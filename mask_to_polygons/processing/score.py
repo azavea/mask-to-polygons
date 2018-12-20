@@ -8,7 +8,9 @@ def spacenet(predictions, ground_truth):
     pred_types = set([type(pred) for pred in predictions])
     truth_types = set([type(truth) for truth in ground_truth])
 
-    if len(pred_types) != 1 or len(truth_types) != 1:
+    if len(pred_types) == 0 or len(truth_types) == 0:
+        return {'tp': 0, 'fp': 0, 'fn': 0}
+    elif len(pred_types) != 1 or len(truth_types) != 1:
         raise Exception()
 
     pred_type = pred_types.pop()
