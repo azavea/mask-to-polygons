@@ -68,7 +68,14 @@ def geojson_from_mask(mask,
                       thickness=0.001):
     polys = geometries_from_mask(mask, transform, mode, min_aspect_ratio,
                                  min_area, width_factor, thickness)
-    return geojson.dumps(FeatureCollection(polys))
+    features = []
+    for poly in polys:
+        features.append({
+            'type': 'Feature',
+            'properties': {},
+            'geometry': poly
+        })
+    return geojson.dumps(FeatureCollection(features))
 
 
 def shapley_from_mask(mask,
