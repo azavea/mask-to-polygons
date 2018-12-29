@@ -4,7 +4,7 @@ import rasterio
 import rasterio.features
 import shapely
 import shapely.geometry
-from geojson import GeometryCollection
+from geojson import FeatureCollection
 
 from mask_to_polygons.processing import buildings
 from mask_to_polygons.processing import polygons
@@ -68,7 +68,14 @@ def geojson_from_mask(mask,
                       thickness=0.001):
     polys = geometries_from_mask(mask, transform, mode, min_aspect_ratio,
                                  min_area, width_factor, thickness)
-    return geojson.dumps(GeometryCollection(polys))
+    features = []
+    for poly in polys:
+        features.append({
+            'type': 'Feature',
+            'properties': {},
+            'geometry': poly
+        })
+    return geojson.dumps(FeatureCollection(features))
 
 
 def shapley_from_mask(mask,
