@@ -31,7 +31,17 @@ def spacenet(predictions, ground_truth):
 
     tree = shapely.strtree.STRtree(ground_truth)
 
+    def make_valid(p):
+        if p.is_valid:
+            return p
+        else:
+            (minx, miny, maxx, maxy) = p.bounds
+            stretch = max(maxx - minx, maxy - miny)
+            return p.buffer(stretch * 0.01)
+
     def iou(a, b):
+        a = make_valid(a)
+        b = make_valid(b)
         a_and_b = a.intersection(b).area
         a_or_b = a.union(b).area
         return a_and_b / a_or_b
