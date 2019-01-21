@@ -37,6 +37,8 @@ def spacenet(predictions, ground_truth):
         else:
             (minx, miny, maxx, maxy) = p.bounds
             stretch = max(maxx - minx, maxy - miny)
+            # Take care to handle bow ties:
+            # https://github.com/Toblerity/Shapely/issues/462
             return p.buffer(stretch * 0.01)
 
     def iou(a, b):
