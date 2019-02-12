@@ -92,7 +92,7 @@ def geojson_from_mask(mask,
     return geojson.dumps(FeatureCollection(features))
 
 
-def shapley_from_mask(mask,
+def shapeley_from_mask(mask,
                       transform,
                       mode='polygon',
                       min_aspect_ratio=1.618,
