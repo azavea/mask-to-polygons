@@ -42,11 +42,17 @@ def geometries_from_mask(mask,
                          min_area=None,
                          width_factor=0.5,
                          thickness=0.001):
+    transform_fn = None
     if isinstance(transform, rasterio.transform.Affine):
         pass
     elif isinstance(transform, str):
         with rasterio.open(transform, 'r') as dataset:
             transform = dataset.transform
+    elif callable(transform):
+        # Transform can be function of form f(x, y) which is assumed to convert from
+        # pixel coordinates to (lat, lng)
+        transform_fn = transform
+        transform = rasterio.transform.IDENTITY
 
     if mode == 'polygons':
         polys = polygons.get_polygons(mask, transform)
@@ -55,6 +61,14 @@ def geometries_from_mask(mask,
                                        min_area, width_factor, thickness)
     else:
         raise Exception()
+
+    if transform_fn:
+        new_polys = []
+        for p in polys:
+            p = shapely.geometry.shape(p)
+            p = shapely.ops.transform(lambda x, y, z=None: transform_fn(x, y), p)
+            new_polys.append(shapely.geometry.mapping(p))
+        polys = new_polys
 
     return polys
 
@@ -78,7 +92,7 @@ def geojson_from_mask(mask,
     return geojson.dumps(FeatureCollection(features))
 
 
-def shapley_from_mask(mask,
+def shapeley_from_mask(mask,
                       transform,
                       mode='polygon',
                       min_aspect_ratio=1.618,

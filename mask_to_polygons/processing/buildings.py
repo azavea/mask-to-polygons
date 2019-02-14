@@ -67,7 +67,8 @@ def get_polygons(mask,
             if building.sum() >= min_area:
                 dilated = cv2.morphologyEx(
                     building, cv2.MORPH_DILATE, kernel, iterations=1)
-                shapes = rasterio.features.shapes(dilated, transform=transform)
+                shapes = rasterio.features.shapes(
+                    dilated, transform=transform, mask=mask == 1)
                 shapes = filter(lambda ab: ab[1] == 1, shapes)
                 shapes = list(shapes)
                 if len(shapes) > 0:

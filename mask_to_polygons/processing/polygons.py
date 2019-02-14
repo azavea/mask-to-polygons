@@ -4,7 +4,7 @@ import rasterio.features
 
 def get_polygons(mask, transform):
     polygons = []
-    shapes = rasterio.features.shapes(mask, transform=transform)
+    shapes = rasterio.features.shapes(mask, mask=mask == 1, transform=transform)
     shapes = filter(lambda ab: ab[1] == 1, shapes)
     shapes = list(shapes)
 
