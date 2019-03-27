@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mask-to-polygons',
-    version='0.1.0',
+    version='0.0.1',
     description='Routines for extracting and working with polygons from semantic segmentation masks',
     url='https://github.com/jamesmcclain/mask-to-polygons',
     author='James McClain',
