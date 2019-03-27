@@ -4,7 +4,7 @@ setup(
     name='mask-to-polygons',
     version='0.0.1',
     description='Routines for extracting and working with polygons from semantic segmentation masks',
-    url='https://github.com/jamesmcclain/mask-to-polygons',
+    url='https://github.com/azavea/mask-to-polygons',
     author='James McClain',
     author_email='jmcclain@azava.com',
     license='Apache License 2.0',
