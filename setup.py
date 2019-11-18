@@ -10,7 +10,7 @@ setup(
     license='Apache License 2.0',
     install_requires=[
         'Shapely==1.6.*',
-        'opencv-python==3.4.*',
+        'opencv-python==4.1.*',
         'numpy>=1.0.0',
         'rasterio>=1.0.0',
         'geojson>=2.4.0',

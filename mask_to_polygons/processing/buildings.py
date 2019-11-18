@@ -6,7 +6,7 @@ import rasterio.features
 
 
 def get_rectangle(buildings):
-    _, contours, _ = cv2.findContours(buildings, cv2.RETR_EXTERNAL,
+   contours, _ = cv2.findContours(buildings, cv2.RETR_EXTERNAL,
                                       cv2.CHAIN_APPROX_SIMPLE)
     if len(contours) > 0:
         rectangle = cv2.minAreaRect(contours[0])
