@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mask-to-polygons',
-    version='0.0.1',
+    version='0.0.2',
     description='Routines for extracting and working with polygons from semantic segmentation masks',
     url='https://github.com/azavea/mask-to-polygons',
     author='James McClain',
